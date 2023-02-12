@@ -13,10 +13,10 @@ RECEIVER_PORT = 8002
 
 # Runs the sender
 run-sender:
-	-kill -9 $$(lsof -t -i:$(SENDER_PORT))
+	# -kill -9 $$(lsof -t -i:$(SENDER_PORT))
 	$(PYTHON) $(SENDER_PATH) "$(config)"
 
 # Runs the receiver
 run-receiver:
-	-kill -9 $$(lsof -t -i:$(RECEIVER_PORT))
+	# -kill -9 $$(lsof -t -i:$(RECEIVER_PORT))
 	$(PYTHON) $(RECEIVER_PATH) "$(config)"
