@@ -100,7 +100,20 @@ if __name__ == '__main__':
 
     # After we are done receiving, it is fine to call recv_end, but keep sending acks back for the last packet.
     recv_monitor.recv_end(write_location, sender_id)
-    # TODO: Keep sending acks back for last packet
+    # Keep sending acks back for last packet if any requests come in
+    print("Waiting for any additional packets from sender")
+    recv_monitor.socketfd.settimeout(5)
+    while True:
+        try:
+            recv_monitor.recv(max_packet_size)
+            print("Received additional packet, sending an ack")
+            recv_monitor.send(sender_id, nbe.to_bytes(4))
+        except Exception as e:
+            print(e)
+            print("BROKE OUT due to timeout")
+            break
+    print("Done waiting for sender packets")
+
 
     # # Exchange messages!
     # addr, data = recv_monitor.recv(max_packet_size)
