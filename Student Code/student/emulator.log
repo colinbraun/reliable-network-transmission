@@ -1,0 +1,41 @@
+1676870321.0011847
+Configuration File Parsed.
+1676870321.0013726
+Starting network emulator on  8000.
+
+1676870323.2085412
+Dropped Packet from ('127.0.0.1', 8001)
+
+1676870323.4152555
+Dropped Packet from ('127.0.0.1', 8001)
+
+1676870323.433934
+Dropped Packet from ('127.0.0.1', 8002)
+
+1676870323.5991576
+Dropped Packet from ('127.0.0.1', 8002)
+
+1676870323.8324585
+Reordered Packet from ('127.0.0.1', 8001) to index 2
+
+1676870323.9978986
+Reordered Packet from ('127.0.0.1', 8001) to index 6
+
+1676870324.5345068
+Dropped Packet from ('127.0.0.1', 8001)
+
+1676870324.5972672
+Dropped Packet from ('127.0.0.1', 8002)
+
+1676870324.6257622
+Reordered Packet from ('127.0.0.1', 8001) to index 6
+
+1676870324.8111415
+Dropped Packet from ('127.0.0.1', 8001)
+
+1676870324.8666272
+Dropped Packet from ('127.0.0.1', 8002)
+
+1676870325.0728083
+Test Complete. Terminating...
+
