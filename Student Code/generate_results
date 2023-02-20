@@ -1,0 +1,15 @@
+#!/bin/bash
+
+dir=$1
+N=5
+
+cd $dir
+# Run the program N times
+for i in $(seq $N); do
+    echo "Generate results for i = $i"
+    ./run > /dev/null 2> /dev/null
+    cp sender_monitor.log ../results/result$i
+done
+echo "Done generating results"
+cd ..
+python3 generate_stats.py

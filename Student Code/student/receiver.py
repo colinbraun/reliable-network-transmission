@@ -58,9 +58,9 @@ if __name__ == '__main__':
     while True:
         # Wait for a packet
         addr, packet = recv_monitor.recv(max_packet_size)
-        seq_no = int.from_bytes(packet[0:4])
+        seq_no = int.from_bytes(packet[0:4], 'big')
         print(f"Received packet with seq no {seq_no}, expecting nbe = {nbe}")
-        packet_size = int.from_bytes(packet[4:8])
+        packet_size = int.from_bytes(packet[4:8], 'big')
         # fin = int.from_bytes(packet[8]) 
         fin = packet[8]
         if fin:
@@ -70,19 +70,19 @@ if __name__ == '__main__':
             nbe += packet_size
             try:
                 # Increment NBE until we find what our cummulative ack should be
-                while int.from_bytes(seq_to_pack_map[nbe][0:4]) == nbe:
-                    packet_size = int.from_bytes(seq_to_pack_map[nbe][4:8])
+                while int.from_bytes(seq_to_pack_map[nbe][0:4], 'big') == nbe:
+                    packet_size = int.from_bytes(seq_to_pack_map[nbe][4:8], 'big')
                     nbe += packet_size
             except:
                 # This happens when the while loop trys a key that does not work
                 pass
             # nbe is now updated, send the ack
             print(f"Sending ack with ack no {nbe}")
-            recv_monitor.send(sender_id, nbe.to_bytes(4))
+            recv_monitor.send(sender_id, nbe.to_bytes(4, 'big'))
         else:
             # We received a packet out of order, send an ack containing NBE
             print(f"Out of order packet, sending ack with ack no {nbe}")
-            recv_monitor.send(sender_id, nbe.to_bytes(4))
+            recv_monitor.send(sender_id, nbe.to_bytes(4, 'big'))
         if nbe == final_nbe:
             break
 
@@ -107,7 +107,7 @@ if __name__ == '__main__':
         try:
             recv_monitor.recv(max_packet_size)
             print("Received additional packet, sending an ack")
-            recv_monitor.send(sender_id, nbe.to_bytes(4))
+            recv_monitor.send(sender_id, nbe.to_bytes(4, 'big'))
         except Exception as e:
             print(e)
             print("BROKE OUT due to timeout")

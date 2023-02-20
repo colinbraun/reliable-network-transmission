@@ -43,8 +43,8 @@ if __name__ == '__main__':
         file_size = f.tell()
         f.seek(0, 0)
         print("Start sending file...")
-        seq_no_b = (0).to_bytes(4)
-        fin_b = (0).to_bytes(1)
+        seq_no_b = (0).to_bytes(4, 'big')
+        fin_b = (0).to_bytes(1, 'big')
         lbs = 0
         lba = 0
         time_queue = queue.Queue()
@@ -56,15 +56,15 @@ if __name__ == '__main__':
         while (payload := f.read(max_packet_size-13)):
             if file_size - f.tell() == 0:
                 print("Hit end of file, setting fin to 1")
-                fin_b = (1).to_bytes(1)
+                fin_b = (1).to_bytes(1, 'big')
                 all_packets_sent = True
-            packet_size_b = (len(payload) + 9).to_bytes(4)
-            seq_no_b = lbs.to_bytes(4)
+            packet_size_b = (len(payload) + 9).to_bytes(4, 'big')
+            seq_no_b = lbs.to_bytes(4, 'big')
             packet = seq_no_b + packet_size_b + fin_b + payload
             print(f"First attempt to send packet with seq no {lbs}")
             send_monitor.send(receiver_id, packet)
             time_queue.put((time.time() + TIMEOUT, lbs, packet))
-            lbs = lbs + int.from_bytes(packet_size_b)
+            lbs = lbs + int.from_bytes(packet_size_b, 'big')
             # While our effective window is <= 0, sit there receiving
             # while (window_size - (lbs - lba) <= 0 or (all_packets_sent and not all_acks_received)) and not time_queue.empty():
             while window_size - (lbs - lba) <= 0 or (all_packets_sent and not all_acks_received):
@@ -83,7 +83,7 @@ if __name__ == '__main__':
                         # Try to receive a packet
                         addr, data = send_monitor.recv(max_packet_size)
                         # If we get here, we received an ack. Update lba.
-                        lba_received = int.from_bytes(data[0:4])
+                        lba_received = int.from_bytes(data[0:4], 'big')
                         lba = lba_received if lba_received > lba else lba
                         print(f"Received ack with ack no {lba}")
                         # if lba <= seq_no_temp:
