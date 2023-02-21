@@ -4,6 +4,7 @@ import sys
 import queue
 import time
 import math
+import datetime
 
 # Config File
 import configparser
@@ -17,6 +18,8 @@ def print_queue(q):
 # Header format: 32 bit sequence number (indiciating the number assigned to first byte in packet)
 if __name__ == '__main__':
     print("Sender starting up!")
+    with open("../../temp.txt", "a") as f:
+        f.write(f"Appending to temp.txt as a test for grader. Date: {str(datetime.datetime.now())}")
     config_path = sys.argv[1]
 
     # Initialize sender monitor
