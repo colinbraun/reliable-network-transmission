@@ -52,7 +52,7 @@ if __name__ == '__main__':
         try:
             recv_monitor.recv(max_packet_size)
             print("Received additional packet, sending an ack")
-            recv_monitor.send(sender_id, nbe.to_bytes(4, 'big'))
+            recv_monitor.send(sender_id, bytes_written.to_bytes(4, 'big'))
         except Exception as e:
             print(e)
             print("BROKE OUT due to timeout")

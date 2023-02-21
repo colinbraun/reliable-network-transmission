@@ -1,12 +1,13 @@
 #!/bin/bash
 
 dir=$1
-N=10
+N=5
 
+rm results/result* 2> /dev/null
 cd $dir
 # Run the program N times
 for i in $(seq $N); do
-    echo "Generate results for i = $i"
+    echo "Generating results for i = $i..."
     ./run > /dev/null 2> /dev/null
     cp sender_monitor.log ../results/result$i
 done

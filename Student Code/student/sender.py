@@ -36,7 +36,12 @@ if __name__ == '__main__':
     # Goodput Mean[std]: 107016.625[5857.757251444019]
     # Overheads Mean[std]: 0.3580145540969421[0.031529922431872484]
     TIMEOUT = delay * 3.1
+    # The header size including what monitor.py tacks on (it tacks on 4 bytes)
+    HEADER_SIZE = 13
+    # TIMEOUT = delay * 4
     bw = int(cfg.get('network', 'LINK_BANDWIDTH'))
+    # Update max packet size depending on BW. This handles situations where we have low bandwidth.
+    max_packet_size = max(min(max_packet_size, int(bw/4)), HEADER_SIZE+1)
     # Set the window size to the BDP
     window_size = math.ceil(delay * bw * 2)
     print(f"MAX PACKET SIZE IS: {max_packet_size}")
@@ -58,7 +63,7 @@ if __name__ == '__main__':
 
         # The actual monitor send function has 4 bytes of overhead itself.
         # With 9 bytes of overhead, we can only send 13 bytes of data less than the maximum
-        while (payload := f.read(max_packet_size-13)):
+        while (payload := f.read(max_packet_size-HEADER_SIZE)):
             if file_size - f.tell() == 0:
                 print("Hit end of file, setting fin to 1")
                 fin_b = (1).to_bytes(1, 'big')
