@@ -4,7 +4,7 @@ import sys
 import queue
 import time
 import math
-import datetime
+# import datetime
 
 # Config File
 import configparser
@@ -18,8 +18,8 @@ def print_queue(q):
 # Header format: 32 bit sequence number (indiciating the number assigned to first byte in packet)
 if __name__ == '__main__':
     print("Sender starting up!")
-    with open("../../temp.txt", "a") as f:
-        f.write(f"Appending to temp.txt as a test for grader. Date: {str(datetime.datetime.now())}")
+    # with open("../../temp.txt", "a") as f:
+    #     f.write(f"Appending to temp.txt as a test for grader. Date: {str(datetime.datetime.now())}")
     config_path = sys.argv[1]
 
     # Initialize sender monitor
@@ -47,6 +47,7 @@ if __name__ == '__main__':
     max_packet_size = max(min(max_packet_size, int(bw/4)), HEADER_SIZE+1)
     # Set the window size to the BDP
     window_size = math.ceil(delay * bw * 2)
+    # window_size = 80000
     print(f"MAX PACKET SIZE IS: {max_packet_size}")
     print(f"WINDOW SIZE IS: {window_size}")
 
