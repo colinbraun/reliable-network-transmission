@@ -1,6 +1,6 @@
 #!/bin/bash
 
-config_path="../../TestConfig/config2.ini"
+config_path="../../ColinConfig/config3.ini"
 echo "Starting network emulator"
 python3 ../../Emulator/emulator.py $config_path &
 sleep 1
@@ -9,6 +9,7 @@ make run-receiver config=$config_path &
 sleep 1
 echo "Starting Sender"
 make run-sender config=$config_path &
-read
-pkill python3
+wait
+# read
+# pkill python3
 

@@ -3,6 +3,7 @@ from monitor import Monitor
 import sys
 import queue
 import time
+import math
 
 # Config File
 import configparser
@@ -30,11 +31,14 @@ if __name__ == '__main__':
     max_packet_size = int(cfg.get('network', 'MAX_PACKET_SIZE'))
     # window_size = int(cfg.get('sender', 'window_size'))
     delay = float(cfg.get('network', 'PROP_DELAY'))
-    # TODO: Play around with what is a good timeout
-    TIMEOUT = delay * 2.2
+    # Tests showed that 3.1 is very good
+    # These tests were done with 200k BW.
+    # Goodput Mean[std]: 107016.625[5857.757251444019]
+    # Overheads Mean[std]: 0.3580145540969421[0.031529922431872484]
+    TIMEOUT = delay * 3.1
     bw = int(cfg.get('network', 'LINK_BANDWIDTH'))
     # Set the window size to the BDP
-    window_size = int(delay * bw)
+    window_size = math.ceil(delay * bw * 2)
     print(f"MAX PACKET SIZE IS: {max_packet_size}")
     print(f"WINDOW SIZE IS: {window_size}")
 
@@ -50,6 +54,7 @@ if __name__ == '__main__':
         time_queue = queue.Queue()
         all_packets_sent = False
         all_acks_received = False
+        packets_in_flight = 0
 
         # The actual monitor send function has 4 bytes of overhead itself.
         # With 9 bytes of overhead, we can only send 13 bytes of data less than the maximum
@@ -63,11 +68,12 @@ if __name__ == '__main__':
             packet = seq_no_b + packet_size_b + fin_b + payload
             print(f"First attempt to send packet with seq no {lbs}")
             send_monitor.send(receiver_id, packet)
+            packets_in_flight += 1
             time_queue.put((time.time() + TIMEOUT, lbs, packet))
             lbs = lbs + int.from_bytes(packet_size_b, 'big')
             # While our effective window is <= 0, sit there receiving
             # while (window_size - (lbs - lba) <= 0 or (all_packets_sent and not all_acks_received)) and not time_queue.empty():
-            while window_size - (lbs - lba) <= 0 or (all_packets_sent and not all_acks_received):
+            while (window_size - (lbs - lba) <= 0) or packets_in_flight >= 50 or (all_packets_sent and not all_acks_received):
                 print(f"lbs: {lbs}")
                 print(f"lba: {lba}")
                 print(f"lbs - lba: {lbs - lba}")
@@ -91,6 +97,7 @@ if __name__ == '__main__':
                         # while not time_queue.empty() and time_queue.queue[0][1] != lba:
                         while not time_queue.empty() and time_queue.queue[0][1] < lba:
                             print(f"Popping buffered packet with seq no {time_queue.get(False)[1]}")
+                            packets_in_flight -=1
                         # If we have sent all the packets and gotten the last ack -> all acks received
                         if all_packets_sent and lba == lbs:
                             print("Received all acks")
