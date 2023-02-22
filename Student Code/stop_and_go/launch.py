@@ -39,7 +39,7 @@ def launch():
     time.sleep(1)
 
     # check if emulator is alive
-    if emulator.poll() is not None:
+    if emulator.poll() is None:
         print("Error, expected emulator to be done but it's still running.")
         emulator.kill()
         exit(1)
