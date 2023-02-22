@@ -32,15 +32,15 @@ if __name__ == '__main__':
         file_size = f.tell()
         f.seek(0, 0)
         print("Start sending file...")
-        seq_no_b = (0).to_bytes(4)
-        fin_b = (0).to_bytes(1)
+        seq_no_b = (0).to_bytes(4, 'big')
+        fin_b = (0).to_bytes(1, 'big')
         # The actual monitor send function has 4 bytes of overhead itself.
         # With 9 bytes of overhead, we can only send 13 bytes of data less than the maximum
         while (payload := f.read(max_packet_size-13)):
             if file_size - f.tell() == 0:
                 print("Hit end of file, setting fin to 1")
-                fin_b = (1).to_bytes(1)
-            payload_size_b = len(payload).to_bytes(4)
+                fin_b = (1).to_bytes(1, 'big')
+            payload_size_b = len(payload).to_bytes(4, 'big')
             packet = seq_no_b + payload_size_b + fin_b + payload
             timed_out = True
             while timed_out:
@@ -53,7 +53,7 @@ if __name__ == '__main__':
                     timed_out = False
                 except:
                     # This except happens when we timeout. Resend.
-                    print(f"Timed out, resending packet with seq no {int.from_bytes(seq_no_b)}")
+                    print(f"Timed out, resending packet with seq no {int.from_bytes(seq_no_b, 'big')}")
                     timed_out = True
                 # Receiver only need respond with seq no.
             # We have finally received the ACK for that packet. We can send the next one.

@@ -31,8 +31,8 @@ if __name__ == '__main__':
             # print(type(packet[8]))
             # print(packet)
             # print('--------------')
-            seq_no = int.from_bytes(packet[:4])
-            payload_size = int.from_bytes(packet[4:8])
+            seq_no = int.from_bytes(packet[:4], 'big')
+            payload_size = int.from_bytes(packet[4:8], 'big')
             # fin = int.from_bytes(packet[8])
             # This is dumb. If you get a slice, you get bytes. If you get a single item, you get an int
             fin = packet[8]
@@ -42,12 +42,12 @@ if __name__ == '__main__':
                 bytes_written += payload_size
             # Send back an ACK
             print(f"Sending ACK with ack no {bytes_written}")
-            recv_monitor.send(sender_id, (bytes_written).to_bytes(4))
+            recv_monitor.send(sender_id, (bytes_written).to_bytes(4, 'big'))
     # After we are done receiving, it is fine to call recv_end, but keep sending acks back for the last packet.
     recv_monitor.recv_end(write_location, sender_id)
     # Keep sending acks back for last packet if any requests come in
     print("Waiting for any additional packets from sender")
-    recv_monitor.socketfd.settimeout(2.5)
+    # recv_monitor.socketfd.settimeout(2.5)
     while True:
         try:
             recv_monitor.recv(max_packet_size)
