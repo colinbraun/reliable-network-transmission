@@ -1,0 +1,77 @@
+1678125472.2732134
+Configuration File Parsed.
+1678125472.2733004
+Starting network emulator on  8000.
+
+1678125474.5282745
+Dropped Packet from ('127.0.0.1', 8001)
+
+1678125474.586433
+Dropped Packet from ('127.0.0.1', 8001)
+
+1678125474.6653557
+Dropped Packet from ('127.0.0.1', 8001)
+
+1678125474.7008924
+Dropped Packet from ('127.0.0.1', 8001)
+
+1678125474.7305343
+Dropped Packet from ('127.0.0.1', 8002)
+
+1678125474.8917577
+Dropped Packet from ('127.0.0.1', 8002)
+
+1678125475.002415
+Dropped Packet from ('127.0.0.1', 8002)
+
+1678125475.3705719
+Dropped Packet from ('127.0.0.1', 8001)
+
+1678125475.5919647
+Dropped Packet from ('127.0.0.1', 8002)
+
+1678125475.7685642
+Dropped Packet from ('127.0.0.1', 8001)
+
+1678125475.9839594
+Dropped Packet from ('127.0.0.1', 8001)
+
+1678125476.1053889
+Dropped Packet from ('127.0.0.1', 8002)
+
+1678125476.3735266
+Dropped Packet from ('127.0.0.1', 8002)
+
+1678125476.8415565
+Dropped Packet from ('127.0.0.1', 8001)
+
+1678125476.8987544
+Dropped Packet from ('127.0.0.1', 8001)
+
+1678125476.9099288
+Dropped Packet from ('127.0.0.1', 8001)
+
+1678125476.9416037
+Dropped Packet from ('127.0.0.1', 8001)
+
+1678125477.1778853
+Dropped Packet from ('127.0.0.1', 8001)
+
+1678125477.2733536
+Current Average Incoming Traffic: 112915.6468917223 bytes/sec
+
+1678125477.46805
+Dropped Packet from ('127.0.0.1', 8001)
+
+1678125477.4943473
+Dropped Packet from ('127.0.0.1', 8001)
+
+1678125477.546944
+Dropped Packet from ('127.0.0.1', 8002)
+
+1678125477.6378112
+Dropped Packet from ('127.0.0.1', 8002)
+
+1678125477.9785967
+Test Complete. Terminating...
+
