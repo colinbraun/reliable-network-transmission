@@ -50,6 +50,7 @@ if __name__ == '__main__':
     # Set the window size to the BDP
     window_size = math.ceil(delay * bw * 2)
     window_size_packets = round(delay * bw * 2 / max_packet_size)
+    # window_size_packets = 10
     # window_size = 80000
     print(f"MAX PACKET SIZE IS: {max_packet_size}")
     print(f"WINDOW SIZE (PACKETS) IS: {window_size_packets}")
@@ -68,7 +69,8 @@ if __name__ == '__main__':
         all_acks_received = False
         packets_in_flight = 0
         acked_seq_nos = set()
-        sent_seq_nos = []
+        # Note the 0 below is intentional. This has to do with acks coming back as NBE, not the first byte of the ack'd packet
+        sent_seq_nos = [0]
         sent_seq_nos_index = 0
 
         # The actual monitor send function has 4 bytes of overhead itself.
@@ -81,7 +83,7 @@ if __name__ == '__main__':
             packet_size_b = (len(payload) + 9).to_bytes(4, 'big')
             seq_no_b = lbs.to_bytes(4, 'big')
             packet = seq_no_b + packet_size_b + fin_b + payload
-            print(f"First attempt to send packet with seq no {lbs}")
+            print(f"First attempt to send packet with seq no {lbs} SEE")
             send_monitor.send(receiver_id, packet)
             packets_in_flight += 1
             time_queue.put((time.time() + TIMEOUT, lbs, packet))
@@ -92,6 +94,7 @@ if __name__ == '__main__':
             # Below is the old while loop. Dose not work well with selective acks.
             # while (window_size - (lbs - lba) <= 0) or packets_in_flight >= 50 or (all_packets_sent and not all_acks_received):
             while (window_size_packets <= packets_in_flight) or packets_in_flight >= 50 or (all_packets_sent and not all_acks_received):
+                print(f"Packets in flight: {packets_in_flight} SEE")
                 # Read the details about the first packet in the queue (not popping it here)
                 timeout, seq_no_temp, packet_temp = time_queue.queue[0]
                 timeout -= time.time()
@@ -107,26 +110,40 @@ if __name__ == '__main__':
                         # Check if the message contains a selective ack
                         if len(data) > 4:
                             selective_seq_no = int.from_bytes(data[4:8], 'big')
-                            print(f"Received SELECTIVE ack with ack no {lba_received}, selective ack no {selective_seq_no}")
+                            print(f"Received SELECTIVE ack with ack no {lba_received}, selective ack no {selective_seq_no} SEE")
                             # If we haven't received this ack before, add it to acked seq nos and allow another packet to be sent
                             if selective_seq_no not in acked_seq_nos:
-                                acked_seq_nos.add(data[4:8])
+                                # acked_seq_nos.add(data[4:8])
+                                acked_seq_nos.add(selective_seq_no)
                                 packets_in_flight -= 1
                         else:
                             print(f"Received CUMULATIVE ack with ack no {lba_received}")
+                        # -----TESTING THIS BLOCK
+                        # Update acked seq nos and packets in flight
+                        while lba > sent_seq_nos[sent_seq_nos_index]:
+                            if sent_seq_nos[sent_seq_nos_index] not in acked_seq_nos:
+                                packets_in_flight -= 1
+                                acked_seq_nos.add(sent_seq_nos[sent_seq_nos_index])
+                            sent_seq_nos_index += 1
                         # while sent_seq_nos_index < len(sent_seq_nos) and sent_seq_nos[sent_seq_nos_index] in acked_seq_nos:
-                        #     sent_seq_nos_index += 1
-                        # lba = sent_seq_nos[]
+                        while sent_seq_nos[sent_seq_nos_index] in acked_seq_nos:
+                            sent_seq_nos_index += 1
+                        # possible_lba = sent_seq_nos[sent_seq_nos_index]
+                        # lba = possible_lba if possible_lba > lba else lba
+                        print(f"lba before adjustment: {lba}", "SEE")
+                        lba = sent_seq_nos[sent_seq_nos_index]
+                        print(f"lba after adjustment: {lba}", "SEE")
+                        # -------END BLOCK
 
                         # if lba <= seq_no_temp:
                         # Pop values until either queue is empty or we find lba
                         # while not time_queue.empty() and time_queue.queue[0][1] != lba:
                         while not time_queue.empty() and time_queue.queue[0][1] < lba:
                             # If the seq no isn't in our acked seq nos, add it and allow another packet in flight
-                            if time_queue.queue[0][1] not in acked_seq_nos:
-                                packets_in_flight -=1
-                                acked_seq_nos.add(time_queue.queue[0][1])
-                            print(f"Popping buffered packet with seq no {time_queue.get(False)[1]}")
+                            # if time_queue.queue[0][1] not in acked_seq_nos:
+                            #     packets_in_flight -=1
+                            #     acked_seq_nos.add(time_queue.queue[0][1])
+                            print(f"1Popping buffered packet with seq no {time_queue.get(False)[1]} SEE")
                         # If we have sent all the packets and gotten the last ack -> all acks received
                         if all_packets_sent and lba == lbs:
                             print("Received all acks")
@@ -135,12 +152,14 @@ if __name__ == '__main__':
                         # If we timeout, see if we have the ack, otherwise resend
                         if seq_no_temp in acked_seq_nos:
                             # Pop it if we already have the ack, and continue on
-                            time_queue.get(False)
+                            print(f"2Popping buffered packet with seq no {time_queue.get(False)[1]} SEE")
+                            # time_queue.get(False)
                             continue
                         print(f"TIMEOUT, resending seq_no: {seq_no_temp}")
                         # print_queue(time_queue)
                         # Pop the value out, it will be readded to the back of the queue
-                        time_queue.get(False)
+                        print(f"3Popping buffered packet with seq no {time_queue.get(False)[1]} SEE")
+                        # time_queue.get(False)
                         send_monitor.send(receiver_id, packet_temp)
                         # Readd it to the queue
                         time_queue.put((time.time() + TIMEOUT, seq_no_temp, packet_temp))
@@ -149,11 +168,13 @@ if __name__ == '__main__':
                     # If we timeout, see if we have the ack, otherwise resend
                     if seq_no_temp in acked_seq_nos:
                         # Pop it if we already have the ack, and continue on
-                        time_queue.get(False)
+                        print(f"4Popping buffered packet with seq no {time_queue.get(False)[1]} SEE")
+                        # time_queue.get(False)
                         continue
                     print(f"Unusual timeout, resending seq_no: {seq_no_temp}")
                     # Pop the value out, it will be readded to the back of the queue
-                    time_queue.get(False)
+                    print(f"5Popping buffered packet with seq no {time_queue.get(False)[1]} SEE")
+                    # time_queue.get(False)
                     send_monitor.send(receiver_id, packet_temp)
                     # Readd it to the queue
                     time_queue.put((time.time() + TIMEOUT, seq_no_temp, packet_temp))

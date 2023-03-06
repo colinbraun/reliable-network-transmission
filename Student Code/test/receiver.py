@@ -59,7 +59,7 @@ if __name__ == '__main__':
         # Wait for a packet
         addr, packet = recv_monitor.recv(max_packet_size)
         seq_no = int.from_bytes(packet[0:4], 'big')
-        print(f"Received packet with seq no {seq_no}, expecting nbe = {nbe}")
+        print(f"Received packet with seq no {seq_no}, expecting nbe = {nbe} SEE")
         packet_size = int.from_bytes(packet[4:8], 'big')
         # fin = int.from_bytes(packet[8]) 
         fin = packet[8]
