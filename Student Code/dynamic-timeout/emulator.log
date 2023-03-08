@@ -1,95 +1,11 @@
-1678207795.2826593
+1678219453.1066093
 Configuration File Parsed.
-1678207795.2827525
+1678219453.1067064
 Starting network emulator on  8000.
 
-1678207798.6298242
-Dropped Packet from ('127.0.0.1', 8001)
+1678219458.1067717
+Current Average Incoming Traffic: 117202.0862108946 bytes/sec
 
-1678207799.910061
-Dropped Packet from ('127.0.0.1', 8001)
-
-1678207800.2154913
-Dropped Packet from ('127.0.0.1', 8002)
-
-1678207800.2828417
-Current Average Incoming Traffic: 14865.633315885823 bytes/sec
-
-1678207800.559123
-Dropped Packet from ('127.0.0.1', 8002)
-
-1678207800.6368213
-Dropped Packet from ('127.0.0.1', 8001)
-
-1678207802.546327
-Dropped Packet from ('127.0.0.1', 8002)
-
-1678207802.7604833
-Dropped Packet from ('127.0.0.1', 8002)
-
-1678207803.2924354
-Dropped Packet from ('127.0.0.1', 8002)
-
-1678207804.4474216
-Dropped Packet from ('127.0.0.1', 8002)
-
-1678207804.752699
-Dropped Packet from ('127.0.0.1', 8001)
-
-1678207804.7832935
-Dropped Packet from ('127.0.0.1', 8001)
-
-1678207805.2829485
-Current Average Incoming Traffic: 19407.445455007983 bytes/sec
-
-1678207805.7345996
-Dropped Packet from ('127.0.0.1', 8001)
-
-1678207807.1811001
-Dropped Packet from ('127.0.0.1', 8002)
-
-1678207809.7340617
-Dropped Packet from ('127.0.0.1', 8002)
-
-1678207810.283023
-Current Average Incoming Traffic: 21127.21380322784 bytes/sec
-
-1678207811.2140558
-Dropped Packet from ('127.0.0.1', 8002)
-
-1678207812.2316608
-Dropped Packet from ('127.0.0.1', 8001)
-
-1678207812.759535
-Dropped Packet from ('127.0.0.1', 8001)
-
-1678207812.7993853
-Dropped Packet from ('127.0.0.1', 8001)
-
-1678207814.4464815
-Dropped Packet from ('127.0.0.1', 8002)
-
-1678207815.283114
-Current Average Incoming Traffic: 21882.517749545514 bytes/sec
-
-1678207815.5277889
-Dropped Packet from ('127.0.0.1', 8001)
-
-1678207816.375763
-Dropped Packet from ('127.0.0.1', 8002)
-
-1678207816.6973073
-Dropped Packet from ('127.0.0.1', 8001)
-
-1678207818.4827716
-Dropped Packet from ('127.0.0.1', 8002)
-
-1678207819.4363382
-Dropped Packet from ('127.0.0.1', 8002)
-
-1678207820.2831964
-Current Average Incoming Traffic: 22336.966005707814 bytes/sec
-
-1678207822.3908644
+1678219458.351572
 Test Complete. Terminating...
 

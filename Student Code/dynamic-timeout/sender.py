@@ -34,14 +34,14 @@ if __name__ == '__main__':
     max_packet_size = int(cfg.get('network', 'MAX_PACKET_SIZE'))
     delay = float(cfg.get('network', 'PROP_DELAY'))
     # The header size including what monitor.py tacks on (it tacks on 4 bytes)
-    HEADER_SIZE = 13
+    HEADER_SIZE = 9
     bw = int(cfg.get('network', 'LINK_BANDWIDTH'))
     # Update max packet size depending on BW. This handles situations where we have low bandwidth.
     max_packet_size = max(min(max_packet_size, int(bw/4)), HEADER_SIZE+1)
     # window_size = math.ceil(delay * bw * 2)
     # Set the window size to the BDP
-    # window_size_packets = round(delay * bw * 2 / max_packet_size)
-    window_size_packets = round(5000/max_packet_size)
+    window_size_packets = math.ceil(delay * bw * 2.0 / max_packet_size)
+    # window_size_packets = round(80000/max_packet_size)
     print(f"MAX PACKET SIZE IS: {max_packet_size}")
     print(f"WINDOW SIZE (PACKETS) IS: {window_size_packets}")
     # Smoothed RTT Estimator (initially 3*prop delay):
@@ -78,15 +78,14 @@ if __name__ == '__main__':
                 # print("Hit end of file, setting fin to 1")
                 fin_b = (1).to_bytes(1, 'big')
                 all_packets_sent = True
-            packet_size_b = (len(payload) + 9).to_bytes(4, 'big')
             seq_no_b = lbs.to_bytes(4, 'big')
-            packet = seq_no_b + packet_size_b + fin_b + payload
+            packet = seq_no_b + fin_b + payload
             # print(f"First attempt to send packet with seq no {lbs} SEE")
             send_monitor.send(receiver_id, packet)
             packets_in_flight += 1
             # Time queue entries: (Time at which packet is considered timed out, seq no, the packet itself, the TIMEOUT it was given, retransmitted)
             time_queue.put((time.time() + TIMEOUT, lbs, packet, TIMEOUT, False))
-            lbs = lbs + int.from_bytes(packet_size_b, 'big')
+            lbs = lbs + len(packet)
             sent_seq_nos.append(lbs)
             while (window_size_packets <= packets_in_flight) or packets_in_flight >= 50 or (all_packets_sent and not all_acks_received):
                 # print(f"Packets in flight: {packets_in_flight} SEE")

@@ -37,22 +37,22 @@ if __name__ == '__main__':
             addr, packet = recv_monitor.recv(max_packet_size)
             seq_no = int.from_bytes(packet[0:4], 'big')
             # print(f"Received packet with seq no {seq_no}, expecting nbe = {nbe} SEE")
-            packet_size = int.from_bytes(packet[4:8], 'big')
-            fin = packet[8]
+            fin = packet[4]
             if fin:
-                final_nbe = seq_no + packet_size
+                final_nbe = seq_no + len(packet)
             # Only add the packet if its seq no is higher than nbe
             if seq_no >= nbe:
                 seq_to_pack_map[seq_no] = packet
             if seq_no == nbe:
-                f.write(packet[9:])
+                f.write(packet[5:])
                 del seq_to_pack_map[seq_no]
-                nbe += packet_size
+                nbe += len(packet)
                 try:
                     # Increment NBE until we find what our cummulative ack should be
                     while int.from_bytes(seq_to_pack_map[nbe][0:4], 'big') == nbe:
-                        f.write(seq_to_pack_map[nbe][9:])
-                        packet_size = int.from_bytes(seq_to_pack_map[nbe][4:8], 'big')
+                        f.write(seq_to_pack_map[nbe][5:])
+                        # packet_size = int.from_bytes(seq_to_pack_map[nbe][4:8], 'big')
+                        packet_size = len(seq_to_pack_map[nbe])
                         del seq_to_pack_map[nbe]
                         nbe += packet_size
                 except:

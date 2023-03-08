@@ -23,7 +23,7 @@ if __name__ == '__main__':
     # Update max packet size depending on BW. This handles situations where we have low bandwidth.
     # max_packet_size = min(max_packet_size, int(bw*0.9))
     delay = float(cfg.get('network', 'PROP_DELAY'))
-    TIMEOUT = delay * 10
+    TIMEOUT = delay * 3.1
     # send_monitor.socketfd.settimeout(0.3)
     send_monitor.socketfd.settimeout(TIMEOUT)
 

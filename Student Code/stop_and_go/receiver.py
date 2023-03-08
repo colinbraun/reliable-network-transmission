@@ -47,7 +47,7 @@ if __name__ == '__main__':
     recv_monitor.recv_end(write_location, sender_id)
     # Keep sending acks back for last packet if any requests come in
     print("Waiting for any additional packets from sender")
-    # recv_monitor.socketfd.settimeout(2.5)
+    recv_monitor.socketfd.settimeout(5)
     while True:
         try:
             recv_monitor.recv(max_packet_size)
